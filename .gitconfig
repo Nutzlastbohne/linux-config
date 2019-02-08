@@ -98,6 +98,11 @@
 	st = status --porcelain
 	local-ignore = update-index --assume-unchanged
 	local-unignore = update-index --no-assume-unchanged
+
+	### hellban <file> - removes the file and ignores the change
+	hellban = "!f(){ rm $@ && git local-ignore $@; }; f"
+	
+	### ignored - list files that are flagged as 'assume-unchanged'
 	ignored = "!f(){ git ls-files -v | grep ^h; }; f"
 
 	### filesTouchedBy <commit message> [<other git log options>] - Files touched by commits containing this message

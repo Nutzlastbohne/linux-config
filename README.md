@@ -37,6 +37,8 @@ rm README.md
 config update-index --assume-unchanged README.md
 ```
 
+the .gitconfig provides the alias for that: `hellban <file>`
+
 to watch the file again
 `config update-index --no-assume-unchanged README.md`
 
