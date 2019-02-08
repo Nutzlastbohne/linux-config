@@ -28,15 +28,7 @@ git clone --bare $HOME/.dotfiles
 config config --local status.showUntrackedFiles no
 ```
 
-view diff to already existing files
-```
-config diff
-```
-
-add/update files from anywhere:
-```
-config add [filename]
-```
+After cloning on a "dirty" machine, files of the repository will be in the staging aread in status `deleted`. So first, do `config reset`, now you can watch the acutal differences with the local machine via `config diff`. Handling of diffs is a little funky, compared to usual git workflows. E.g. fetching changes from the remote will cause diffs that look like you locally removed what the remote added. Therefore: **before fetching, make sure you have no local changes!** But since you're the only person working on it, that shouldn't be much of an issue.
 
 ## ignoring files you don't want
 
