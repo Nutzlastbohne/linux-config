@@ -1,0 +1,181 @@
+[apply]
+	ignorewhitespace = change
+[color]
+	ui = auto
+[color "branch"]
+#	current = green bold
+	remote = cyan
+[color "diff"]
+	old = red bold
+	new = green bold
+[color "status"]
+	changed = green
+	added = green bold
+	untracked = cyan dim
+	unmerged = red bold
+	nobranch = red bold
+	branch = green bold
+[core]
+	#editor = "atom -n --wait"
+	editor = "gedit -s"
+	preloadindex = true # recommended for filesystems with high IO latencies like NFS
+	ignorecase = true
+	# use 'less' with color-interpreter mode
+	pager=less -r
+[diff]
+	tool = diffuse
+# 	tool = winmerge
+	mnemonicprefix = true # E.g. instead of annotating diff paths with "a" and "b", annotate with "i" and "w" (Index, Workspace)
+[difftool]
+	prompt = false # starting difftool won't ask for confirmation
+[difftool.diffuse]
+#	path = C:/Tools/Diffuse/diffuse.exe
+	path = diffuse
+[difftool.winmerge]
+	trustExitCode = true
+	cmd = "/c/Dev/WinMerge/WinMergeU.exe" -u -e -dl \"HEAD\" -dr \"Workspace\" $LOCAL $REMOTE
+[grep]
+	lineNumber = true # always show line-numbers
+	extendedRegexp = true
+[gui]
+	encoding = UTF-8
+	fontdiff = -family \"Source Code Pro for Powerline\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+[i18n]
+#	commitEncoding = windows-1252
+#	logOutputEncoding = windows-1252
+[merge]
+	tool = diffuse
+# 	tool = winmerge
+	defaultToUpstream = true # if no <tree-ish> parameter given, merge with origin/[branch]
+[mergetool]
+	prompt = false
+[mergetool.winmerge]
+	trustExitCode = true
+#	cmd = "/c/Dev/WinMerge/WinMergeU.exe" -u -e -dl \"Local\" -dr \"Remote\" $LOCAL $REMOTE $MERGED
+[rerere]
+	enabled = true
+[rebase]
+	stat = true
+	autostash = true
+[pull]
+	rebase = preserve
+[push]
+	default = current # only push active branch
+[status]
+	relativePaths = false
+[user]
+	name = Robert Radestock
+	email = robert.radestock@affinitas.de
+#[url "git@github.com:"]
+#	insteadOf = https://github.com/
+[url "git@gitlab.affinitas.de:2296"]
+    	insteadOf = https://gitlab.affinitas.de/
+[alias]
+	logtree = log --format='%an - %ai, Hash: %H%n%w(220,6,6)%s' --graph
+	shrtlog = log --format='%nAuthor: %C(yellow bold)%an%Creset, Date: %C(yellow bold)%ai%Creset, Hash: %C(yellow bold)%H%Creset%n%Creset%w(220,6,6)%B' --no-merges --color-words --shortstat
+	daylog = log --format='%nAuthor: %C(yellow bold)%an%Creset, Date: %C(yellow bold)%ai%Creset, Hash: %C(yellow bold)%H%Creset%n%Creset%w(220,6,6)%B' --no-merges --color-words --numstat --since='yesterday'
+	dlog = log --format='%nAuthor: %C(yellow bold)%an%Creset, Date: %C(yellow bold)%ai%Creset, Hash: %C(yellow bold)%H%Creset%n%Creset%w(220,6,6)%B' --no-merges --color-words --numstat ..FETCH_HEAD
+	dlogX = log --format='%nAuthor: %C(yellow bold)%an%Creset, Date: %C(yellow bold)%ai%Creset, Hash: %C(yellow bold)%H%Creset%n%Creset%w(220,6,6)%B' --no-merges --color-words --numstat
+	lasttag = describe --tags --abbrev=0
+	taglist = "!f() { git log --tags --simplify-by-decoration --format=%d | grep -E 'tag.*Sprint' | tr -d '(),' | cut -f3 --delimiter=' '; }; f"
+	# print changes between last tag and second last tag
+	# deprecated - was for ZIB project. Sorts by ticket number; prints each ticket number only once
+	# chglog = "!f() { CURR_TAG=$(git lasttag); PREV_TAG=$(git lasttag $CURR_TAG~1) ; echo "--== $CURR_TAG ==--"; git log --oneline $PREV_TAG..$CURR_TAG | cut -b9- | sort | uniq -w8 | grep -E '^(ZIB-[0-9]{4,})'; }; f"
+	chglog = "!f() { CURR_TAG=$(git lasttag); PREV_TAG=$(git lasttag $CURR_TAG~1) ; echo "--== $CURR_TAG ==--"; git log --oneline $PREV_TAG..$CURR_TAG | cut -b9-; }; f"
+	# print changes since last tag
+	sprintlog = "!f() { LAST_TAG=$(git lasttag); git log --oneline $LAST_TAG..HEAD | cut -b9- | sort | uniq -w8; }; f"
+	gconf = "!f(){ git config --global -e; }; f &" # edit global config
+	lconf = "!f(){ git config --local -e; }; f &" # edit local config
+	sup = "!f(){ REMOTE=$(git getremote); gitk ..$REMOTE; }; f &" # upstream changes
+	pus = "!f(){ gitk ORIG_HEAD..; }; f &" # changes since last rebase/merge
+	tig = "!f(){ gnome-terminal -x zsh -c \"tig $@\"; }; f" # open tig in new term window
+	tsup = "!f(){ REMOTE=$(git getremote); git tig $1..$REMOTE; }; f" # 'git sup' in tig
+	pmerge = merge -s recursive -X patience -X ignore-all-space # patient merge - takes longer but may resolve more conflicts
+	mt = mergetool -y
+	df = difftool -y
+	cp = cherry-pick
+	co = checkout
+	st = status --porcelain
+	local-ignore = update-index --assume-unchanged
+	local-unignore = update-index --no-assume-unchanged
+	ignored = "!f(){ git ls-files -v | grep ^h; }; f"
+
+	### filesTouchedBy <commit message> [<other git log options>] - Files touched by commits containing this message
+	# "^[0-9]+.+[0-9]+" represents the start of the changes list. It's not beautiful, but compatible with both linux and windows grep
+	filesTouchedBy = "!f() { git log --grep=$1 --no-renames --numstat $2 | grep -E ^[0-9]+.+[0-9]+ | cut -f3 | sort | uniq; }; f"
+
+	### existingFilesTouchedBy <commit message> [<other git log options>] - like 'filesTouchedBy', but will only list exisiting files
+	existingFilesTouchedBy = "!f() { for i in $(git filestouchedby $1 $2); do if [ -e $i ] ; then echo $i; fi ; done }; f"
+
+	### hasheswithmsg <commit message> - print hashes for all commits with this message (oldest commit first)
+	hashesWithMsg = "!f() { git log --format=%H --reverse --grep=$*; }; f"
+
+	### prepSquash <commit message> - Prepares a 'review-squash': list hashes of commits with message $1 and add prefix 'p' to the first and 's' for remaining entries
+	prepSquash = "!f() { prefix=p; for i in $(git log --grep=$1 --format=%H --reverse); do echo $prefix $i; prefix=s; done }; f"
+
+	### doXForAll <command> <porcelain-status> - do <command> for each file in status <porcelain-status> (see 'git status --porcelain' for valid status values)
+	# example for resetting all changed files added to "changes to be committed" (won't touch 'deleted' files): >git doxforall "git checkout" "^ M"
+	doXForAll = "!f() { for i in $(git status --porcelain | grep -E \"$2\" | cut -b4-); do $1 $i; done }; f"
+
+	### resetFilesTouchedBy  <commit message> <branch> - resets all files touched by commits containing <commit message> on branch <branch>. Useful for Reviews
+	resetFilesTouchedBy = "!f() { git filestouchedby $1 $2 | tr [:space:] ' ' | xargs git reset --; }; f"
+
+	### addFilesTouchedBy  <commit message> <branch> - add all files touched by commits with message <commit message> on branch <branch>. Useful for Reviews
+	addFilesTouchedBy = "!f() { for i in $(git filestouchedby $1 $2); do if [ -e $i ] ; then echo $i; fi ; done | tr [:space:] ' ' | xargs git add; }; f"
+
+	### assumeUnchanged <folder> - git will ignore <folder> for status calculation
+	# assumeUnchanged = "!f() { for i in $(git ls-files -v $1 | grep ^H.* | cut -b3-); do git local-ignore $i; done }; f"
+	assumeUnchanged = "!f() { git ls-files -z $1 | xargs -0 -n 100 git update-index --assume-unchanged; }; f"
+
+	### noAssumeUnchanged <folder> - git wont ignore <folder> any longer for status calculation
+	# noAssumeUnchanged = "!f() { for i in $(git ls-files -v $1 | grep ^h.* | cut -b3-); do git local-unignore $i; done }; f"
+	noassumeUnchanged = "!f() { git ls-files -z $1 | xargs -0 -n 100 git update-index --no-assume-unchanged; }; f"
+
+	### git delmerged
+	# for each merged branch, print command to remove branch from origin (based on a script provided by jonas)
+	delmerged = "!f() { for branch in `git branch -a --merged | grep -v "/master$" | grep -o "remotes/origin/.*" | cut -c16-`; do echo git push origin :$branch; done }; f"
+
+	### git delgone
+	# list branch deletion command for each branch missing in upstream
+        # git branch -v --no-color | grep -E "^(\s+\S+){2}\s+\[gone\]" | grep -Eo "^\\s+\\S+" | xargs -r -n1 echo "git branch -d"
+	delgone = "!f() { git branch -v --no-color | grep -E \"^(\\s+\\S+){2}\\s+\\[gone\\]\" | grep -Eo \"^\\s+\\S+\" | xargs -r -n1 echo \"git branch -d\"; }; f"
+
+	## getremote [branch] - returns remote branch for current HEAD, or for the given one
+        getremote = "!f() { git rev-parse --abbrev-ref --remotes=*$(git getbranch $1); }; f"
+
+	## getbranch [branch] - either gets branchname for HEAD, or the given one
+        getbranch = "!f() { git rev-parse --abbrev-ref ${1:-HEAD}; }; f"
+
+	## subup - update submodules to the version referenced in the parent
+	subup = git submodule update --recursive --rebase --remote
+
+  	## subupr - update submodules to their latest versions
+	subupr = git submodule update --recursive --rebase --remote
+
+        ## useful for linux e.g. when moving to a different distro - resets permission changes
+	permission-reset = !git diff -p -R --no-color | grep -E \"^(diff|(old|new) mode)\" --color=never | git apply
+
+        ### genReviewBranch <commit message> <branch> - generates a review branch where all files touched by commits with message <commit message>
+        ## !NOTE!: having this inside your .gitconfig on Windows will break the Git support for Eclipse! Remove this macro and restart Eclipse and you're fine
+        #
+        # This macro will squash all changes of files touched by matching commits into a single commit. Remaining files will be squashed into another commit.
+        # example:
+        #       git genreviewbranch ZIB-1234 origin/2.5
+	#
+	# TODO: add an 'up to' parameter to limit history
+        genReviewBranch = "!f() { "\
+                                                "branchname=$1"-Review"; "\
+                                                "firstRelevantCommit=$(git log --reverse --grep=^$1 --pretty=format:%H $2 | head -1); "\
+                                                "firstRelevantCommit=$firstRelevantCommit"~1"; "\
+                                                "git checkout -B $branchname $2; "\
+                                                "echo \"reset soft to -> $firstRelevantCommit\"; "\
+                                                "git reset --soft $firstRelevantCommit; "\
+                                                "echo \"reset relevant files for ticket $1 from branch $2\"; "\
+                                                "git resetfilestouchedby ^$1 $2 ; "\
+                                                "echo \"commit misc files\"; "\
+                                                "git commit --author=\"others <others@affinitas.de>\" -m \"squashed misc\"; "\
+                                                "git add .; "\
+                                                "echo \"commit $1 relevant files\"; "\
+                                                "git commit --author=\"$1 <$1@affinitas.de>\" -m \"squashed commit for call $1\"; "\
+                                                "}; f"
+
