@@ -1,0 +1,114 @@
+## optimize default behavior of 'less'
+# a -> always search whole file, not only from current position
+# j.3 -> move focused line to 30% of the screen (for better context during search)
+# #.5 -> left/right keys move screen 50% of the page (instead of full page)
+# r -> always interpret color-codes
+export LESS=-aj.3#.5r
+
+export ANDROID_HOME=~/Android/Sdk
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+export GOPATH=$HOME/go
+export GOROOT=/usr/local/go
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOROOT/bin
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+#export PATH="$PATH:$HOME/.rvm/bin"
+#source /home/rradestock/.rvm/scripts/rvm
+
+# for maintaining 
+alias config='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+
+alias cls='tput reset'
+alias h='history'
+alias pgrep='pgrep -af'
+alias whut='apropos'
+# launch atom (installed via flatpak)
+alias atom='/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=atom --file-forwarding io.atom.Atom'
+## dev related
+# put docker machine environment variables
+alias dr='docker'
+alias drc='docker-compose'
+alias drm='docker-machine'
+alias drenv='eval $(docker-machine env)'
+#alias swagger="docker run --rm -it -e GOPATH=$HOME/go:/go -v $HOME:$HOME -w $(pwd) quay.io/goswagger/swagger"
+## loveos related
+# set QT_AUTO_SCREEN_SCALE_FACTOR=0 to fix tiny fonts
+alias robo3t='QT_AUTO_SCREEN_SCALE_FACTOR="0" /usr/local/bin/robo3t/bin/robo3t'
+alias glr=gitlab-runner
+alias glrd='gitlab-runner exec docker'
+alias mk='minikube'
+alias kcat='kafkacat'
+
+### custom
+# redefine gitk to always detach from console
+gitk() {
+  /usr/bin/gitk $@ &
+}
+
+# run gitk, limiting the output to commits containing a certain string in their commit-message (like git log -S)
+# note: this command doesn't limit the output enough. All commits after the first match are shown...
+gitks() {
+  gitk --argscmd="git log --oneline --no-color --grep $1 | cut -f -1 -d ' '"
+}
+
+# detach mssh + single column mode default
+mssh() {
+  /usr/bin/mssh -c1 $@ &
+}
+
+# show environment of a process with the given id
+# eg.: procenv 1234
+procenv() {
+    sudo cat /proc/$1/environ | tr \\0 \\n
+}
+
+# call git bfg for repo cleanup
+bfg() {
+  java -jar ~/tools/bfg-1.12.15.jar $@
+}
+
+redis-cli() {
+  docker run -it --rm --net docker_default --name redis-cli --link redis-session-store:redis redis redis-cli -h redis -p 6379 $@
+}
+
+# remove all docker containers matching $1
+dockrem() {
+  docker ps -a | grep $1 | cut -c -12 | xargs docker rm -f
+}
+
+decode () {
+  echo "$1" | base64 -d ; echo
+}
+
+
+# list filedescriptors per process
+fdperp() {
+  find /proc -maxdepth 1 -type d -name '[0-9]*' \
+     -exec bash -c "sudo ls {}/fd/ | wc -l | tr '\n' ' '" \; \
+     -printf "fds (PID = %P), command: " \
+     -exec bash -c "tr '\0' ' ' < {}/cmdline" \; \
+     -exec echo \; \
+     | sort -rn | head
+}
+
+# grep env (case insensitive
+genv() {
+  env | grep -i $1
+}
+
+# execute 'denv' on startup - increases startup team for each terminal by a few seconds... annoying!
+# run 'eval $(docker-machine env)' to set docker environment
+#if [[ $(dm status) = Running ]]; then
+#  denv
+#else
+#  echo docker-machine not running!
+#fi
