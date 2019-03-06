@@ -80,9 +80,10 @@ redis-cli() {
   docker run -it --rm --net docker_default --name redis-cli --link redis-session-store:redis redis redis-cli -h redis -p 6379 $@
 }
 
-# remove all docker containers matching $1
-dockrem() {
-  docker ps -a | grep $1 | cut -c -12 | xargs docker rm -f
+# remove all docker containers matching $@
+drem() {
+  # sed-command: append all non-space sequences with a "-e ..." (the 'extended regex' parameter for grep)
+  docker ps -a | grep $(sed 's/[^ ]*/-e &/g' <<< "$@") | cut -c -12 | xargs docker rm -f
 }
 
 decode () {
