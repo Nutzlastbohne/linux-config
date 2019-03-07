@@ -20,7 +20,7 @@ alias config ='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 
 2) clone the repo
 ```
-git clone --bare $HOME/.dotfiles
+git clone --bare https://github.com/Nutzlastbohne/linux-config.git .dotfiles
 ```
 
 3) make `git status` stop showing untracked files (which is probably the majority under $HOME)
