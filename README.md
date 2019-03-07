@@ -49,3 +49,7 @@ to watch the file again
 ```
 config update-index --no-assume-unchanged README.md
 ```
+
+## getting updates to your local copy
+
+Getting updates from the remote only works with `git pull`. The manual fetch-rebase approach won't work.
