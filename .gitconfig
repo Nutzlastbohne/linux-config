@@ -20,11 +20,13 @@
 	editor = "gedit -s"
 	preloadindex = true # recommended for filesystems with high IO latencies like NFS
 	ignorecase = true
-	# use 'less' with color-interpreter mode
-	pager=less -r
+	## use 'less' with color-interpreter mode
+	# pager=less -r
+	## use no pager
+	pager=
 [diff]
 	tool = diffuse
-# 	tool = winmerge
+#	tool = winmerge
 	mnemonicprefix = true # E.g. instead of annotating diff paths with "a" and "b", annotate with "i" and "w" (Index, Workspace)
 [difftool]
 	prompt = false # starting difftool won't ask for confirmation
@@ -45,7 +47,7 @@
 #	logOutputEncoding = windows-1252
 [merge]
 	tool = diffuse
-# 	tool = winmerge
+#	tool = winmerge
 	defaultToUpstream = true # if no <tree-ish> parameter given, merge with origin/[branch]
 [mergetool]
 	prompt = false
@@ -69,7 +71,7 @@
 #[url "git@github.com:"]
 #	insteadOf = https://github.com/
 [url "git@gitlab.affinitas.de:2296"]
-    	insteadOf = https://gitlab.affinitas.de/
+	insteadOf = https://gitlab.affinitas.de/
 [alias]
 	logtree = log --format='%an - %ai, Hash: %H%n%w(220,6,6)%s' --graph
 	shrtlog = log --format='%nAuthor: %C(yellow bold)%an%Creset, Date: %C(yellow bold)%ai%Creset, Hash: %C(yellow bold)%H%Creset%n%Creset%w(220,6,6)%B' --no-merges --color-words --shortstat

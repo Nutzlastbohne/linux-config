@@ -83,7 +83,7 @@ redis-cli() {
 # remove all docker containers matching $@
 drem() {
   # sed-command: append all non-space sequences with a "-e ..." (the 'extended regex' parameter for grep)
-  docker ps -a | grep $(sed 's/[^ ]*/-e &/g' <<< "$@") | cut -c -12 | xargs docker rm -f
+  docker ps -a | grep $(sed 's/[^ ]*/-e &/g' <<< "$@") | cut -c -12 | xargs docker rm -f -v
 }
 
 decode () {
@@ -106,7 +106,7 @@ genv() {
   env | grep -i $1
 }
 
-# execute 'denv' on startup - increases startup team for each terminal by a few seconds... annoying!
+# execute 'denv' on startup - increases startup time for each terminal by a few seconds... annoying!
 # run 'eval $(docker-machine env)' to set docker environment
 #if [[ $(dm status) = Running ]]; then
 #  denv

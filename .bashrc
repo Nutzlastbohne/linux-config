@@ -125,3 +125,7 @@ if [ -x /usr/bin/mint-fortune ]; then
 fi
 
 source ~/.commonrc
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/rradestock/.sdkman"
+[[ -s "/home/rradestock/.sdkman/bin/sdkman-init.sh" ]] && source "/home/rradestock/.sdkman/bin/sdkman-init.sh"
