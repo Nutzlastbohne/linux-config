@@ -90,7 +90,7 @@
 	lconf = "!f(){ git config --local -e; }; f &" # edit local config
 	sup = "!f(){ REMOTE=$(git getremote); gitk ..$REMOTE; }; f &" # upstream changes
 	pus = "!f(){ gitk ORIG_HEAD..; }; f &" # changes since last rebase/merge
-	tig = "!f(){ gnome-terminal -x zsh -c \"tig $@\"; }; f" # open tig in new term window
+	tig = "!f(){ gnome-terminal -- zsh -c \"tig $@\"; }; f" # open tig in new term window
 	tsup = "!f(){ REMOTE=$(git getremote); git tig $1..$REMOTE; }; f" # 'git sup' in tig
 	pmerge = merge -s recursive -X patience -X ignore-all-space # patient merge - takes longer but may resolve more conflicts
 	mt = mergetool -y
