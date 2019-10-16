@@ -72,6 +72,7 @@ plugins=(
   sudo
   urltools
   kubectl
+  kubetail
   fzf
   zsh-syntax-highlighting
 )
