@@ -5,6 +5,9 @@
 # r -> always interpret color-codes
 export LESS=-aj.3#.5r
 
+# don't add duplicate command executions into shell history
+export HISTCONTROL=ignoreboth
+
 export ANDROID_HOME=~/Android/Sdk
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$ANDROID_HOME/emulator
