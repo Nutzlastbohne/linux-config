@@ -117,7 +117,8 @@ source ~/.commonrc
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export FZF_DEFAULT_OPTS="--cycle --preview='head -80 {+}'"
+#export FZF_DEFAULT_OPTS="--cycle --preview='head -80 {+}'"
+export FZF_DEFAULT_OPTS="--cycle"
 export FZF_DEFAULT_COMMAND="find . -path .git -prune -o -print"
 export FZF_CTRL_T_OPTS="--preview 'less {}'"
 export FZF_CTRL_R_OPTS=""
@@ -126,4 +127,5 @@ export FZF_ALT_C_OPTS=""
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/rradestock/.sdkman"
-[[ -s "/home/rradestock/.sdkman/bin/sdkman-init.sh" ]] && source "/home/rradestock/.sdkman/bin/sdkman-init.sh"
+# !!! skipping sdkinit because it's a suspect for terminal slowness
+#[[ -s "/home/rradestock/.sdkman/bin/sdkman-init.sh" ]] && source "/home/rradestock/.sdkman/bin/sdkman-init.sh"
